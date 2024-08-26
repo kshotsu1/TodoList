@@ -1,23 +1,29 @@
 <template>
     <div class="modal-bg">
       <div class="modal">
-        <div class="modal-content">
-          <p>削除確認ダイアログ</p>
-          <button @click="closeModal">ダイアログを閉じる</button>
-        </div>
+        <p>以下のTODOを削除しますか？</p>
+        <p>締切日</p>
+        <p>YYYY/mm/dd</p>
+        <p>TODO内容</p>
+        <p>~~~~~~~~</p>
+        <p>
+          <button @click="closeModal">はい</button>
+          <button @click="closeModal">いいえ</button>
+        </p>
+        
       </div>
     </div>
   </template>
   
-  <script>
-  export default {
-    methods: {
-      closeModal() {
-        this.$emit('close'); // 親コンポーネントにモーダルを閉じるイベントを送信
-      }
+<script>
+export default {
+  methods: {
+    closeModal() {
+      this.$emit('close'); // 親コンポーネントにモーダルを閉じるイベントを送信
     }
-  };
-  </script>
+  }
+};
+</script>
 
 <style>
 .modal-bg {

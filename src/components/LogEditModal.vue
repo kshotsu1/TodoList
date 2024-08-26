@@ -1,26 +1,26 @@
 <template>
-  <div class="modal-bg">
-    <div class="modal">
-      <p>タスクの登録</p>
-      <p>締切日</p>
-      <input name="date" type="date" />
-      <p>TODO内容</p>
-      <input type="text" />
-      <p>
-        <button>登録</button>
-        <button @click="closeModal">閉じる</button>
-      </p>
+    <div class="modal-bg">
+      <div class="modal">
+        <p>履歴タスクの編集</p>
+        <p>締切日</p>
+        <input name="date" type="date" />
+        <p>TODO内容</p>
+        <input type="text" />
+        <p>
+          <button>編集</button>
+          <button @click="closeModal">閉じる</button>
+        </p>
+      </div>
     </div>
-  </div>
 </template>
   
 <script>
 export default {
-  methods: {
+methods: {
     closeModal() {
-      this.$emit('close'); // 親コンポーネントにモーダルを閉じるイベントを送信
+    this.$emit('close'); // 親コンポーネントにモーダルを閉じるイベントを送信
     }
-  }
+}
 };
 </script>
 
@@ -45,11 +45,12 @@ export default {
   height: 600px; /* モーダルの高さを設定 */
   width: 1000px; /* モーダルの幅を設定 */
 
-
   /* モーダル内のコンテンツを中央揃え */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 }
+
+
 </style>

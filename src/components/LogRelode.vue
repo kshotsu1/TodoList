@@ -1,15 +1,6 @@
 <script>
-import RelodeModal from './LogRelode.vue'; 
 
 export default {
-components: {
-    RelodeModal
-},
-data() {
-    return {
-    showRelodeModal: false // 折りたたみ状態を管理する
-    };
-},
 methods: {
     closeModal() {
     this.$emit('close'); // 親コンポーネントにモーダルを閉じるイベントを送信
@@ -22,16 +13,15 @@ methods: {
 <template>
     <div class="modal-bg">
       <div class="modal">
-        <p>履歴タスクの編集</p>
+        <p>以下のTODOを戻しますか？</p>
+        <button @click="closeModal">戻る</button>
         <p>締切日</p>
         <input name="date" type="date" />
         <p>TODO内容</p>
         <input type="text" />
         <p>
-          <button  type="button" @click="showRelodeModal = true">編集</button>
-          <RelodeModal v-if="showRelodeModal" @close="showRelodeModal = false"></RelodeModal>
-          <button @click="closeModal">閉じる</button>
-          
+          <button>追加</button>
+          <button @click="closeModal">更新</button>
         </p>
       </div>
     </div>

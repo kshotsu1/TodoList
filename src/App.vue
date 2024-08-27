@@ -9,14 +9,14 @@ const todo_data = ref([
   {
     id: 1,
     content: '牛乳を買う',
-    status: false,
+    status: true,
     limit: '2024/09/31',
     insertdate: '2024/08/31'
   },
   {
     id: 2,
     content: '砂糖を買う',
-    status: false,
+    status: true,
     limit: '2024/09/31',
     insertdate: '2024/08/31'
   },
@@ -70,23 +70,25 @@ export default {
       </tr>
     </thead>
     <tbody>
+      <p v-if="allStatusTrue">すべてのタスクが完了しました！</p>
+        
       <tr v-for="todo in todos" :key="todo.id">
-      <template v-if="!todo.status">
-        <th><input type="checkbox"></th>
-        <th>{{ todo.limit }}</th>
-        <th>{{ todo.content }}</th>
-        <th> 
-          <!-- 編集モーダルを開くボタン -->
-          <button  type="button" @click="showEditModal = true">編集</button> 
-          <EditModal v-if="showEditModal" @close="showEditModal = false"></EditModal>
-        </th>
-        <th> 
-          <!-- 削除ダイアログを開くボタン -->
-          <button  type="button" @click="showDeleteModal = true">削除</button> 
-          <DeleteModal v-if="showDeleteModal" @close="showDeleteModal = false"></DeleteModal>
-        </th>
-      </template>
-    </tr>
+        <template v-if="!todo.status">
+          <th><input type="checkbox"></th>
+          <th>{{ todo.limit }}</th>
+          <th>{{ todo.content }}</th>
+          <th> 
+            <!-- 編集モーダルを開くボタン -->
+            <button  type="button" @click="showEditModal = true">編集</button> 
+            <EditModal v-if="showEditModal" @close="showEditModal = false"></EditModal>
+          </th>
+          <th> 
+            <!-- 削除ダイアログを開くボタン -->
+            <button  type="button" @click="showDeleteModal = true">削除</button> 
+            <DeleteModal v-if="showDeleteModal" @close="showDeleteModal = false"></DeleteModal>
+          </th>
+        </template>
+      </tr>
     </tbody>
   </table>
   <!-- 登録モーダルを開くボタン -->

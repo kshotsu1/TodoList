@@ -1,5 +1,5 @@
 <script>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import EditModal from './components/EditModal.vue'; 
 import LogEditModal from './components/LogEditModal.vue'; 
 import AddModal from './components/AddModal.vue'; 
@@ -16,18 +16,26 @@ const todo_data = ref([
   {
     id: 2,
     content: '砂糖を買う',
-    status: true,
+    status: false,
     limit: '2024/09/31',
     insertdate: '2024/08/31'
   },
   {
     id: 3,
     content: '卵を買う',
-    status: true,
+    status: false,
     limit: '2024/09/31',
     insertdate: '2024/08/31'
   }
 ]);
+
+const allStatusTrue = computed(() => {
+      return todo_data.value.every(todo => todo.status === true);
+    });
+
+const allStatusFlase = computed(() => {
+    return todo_data.value.every(todo => todo.status === false);
+  });
 
 export default {
   components: {
@@ -43,6 +51,8 @@ export default {
       showDeleteModal: false,
       showLogEditModal: false,
       todos: todo_data,
+      allStatusTrue: allStatusTrue,
+      allStatusFlase: allStatusFlase,
       isOpen: false // 折りたたみ状態を管理する
     };
   },
@@ -69,9 +79,12 @@ export default {
         <th></th>
       </tr>
     </thead>
-    <tbody>
-      <p v-if="allStatusTrue">すべてのタスクが完了しました！</p>
-        
+    <p v-if="allStatusTrue">
+      現在のTODOはありません。<br>
+      登録する場合は下の登録ボタンを押してください。<br>
+      ↓<br>
+    </p>
+    <tbody v-else>
       <tr v-for="todo in todos" :key="todo.id">
         <template v-if="!todo.status">
           <th><input type="checkbox"></th>
@@ -102,23 +115,28 @@ export default {
     <span>{{ isOpen ? '▲' : '▼' }}</span> <!-- 折りたたみ状態を表示 -->
   </div>
   <div v-if="isOpen" class="list-content">
-    <tr v-for="todo in todos" :key="todo.id">
-      <template v-if="todo.status">
-        <th><input type="checkbox"></th>
-        <th>{{ todo.limit }}</th>
-        <th>{{ todo.content }}</th>
-        <th> 
-          <!-- 編集モーダルを開くボタン -->
-          <button  type="button" @click="showLogEditModal = true">編集</button> 
-          <LogEditModal v-if="showLogEditModal" @close="showLogEditModal = false"></LogEditModal>
-        </th>
-        <th> 
-          <!-- 削除ダイアログを開くボタン -->
-          <button  type="button" @click="showDeleteModal = true">削除</button> 
-          <DeleteModal v-if="showDeleteModal" @close="showDeleteModal = false"></DeleteModal>
-        </th>
-      </template>
-    </tr>
+    <div v-if="allStatusFlase">
+      現在の完了済みTODOはありません。<br>
+    </div>
+    <div v-else>
+      <tr v-for="todo in todos" :key="todo.id">
+        <template v-if="todo.status">
+          <th><input type="checkbox"></th>
+          <th>{{ todo.limit }}</th>
+          <th>{{ todo.content }}</th>
+          <th> 
+            <!-- 編集モーダルを開くボタン -->
+            <button  type="button" @click="showLogEditModal = true">編集</button> 
+            <LogEditModal v-if="showLogEditModal" @close="showLogEditModal = false"></LogEditModal>
+          </th>
+          <th> 
+            <!-- 削除ダイアログを開くボタン -->
+            <button  type="button" @click="showDeleteModal = true">削除</button> 
+            <DeleteModal v-if="showDeleteModal" @close="showDeleteModal = false"></DeleteModal>
+          </th>
+        </template>
+      </tr>
+    </div>
   </div>
 
 

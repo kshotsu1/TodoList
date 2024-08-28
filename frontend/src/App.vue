@@ -148,7 +148,17 @@ export default {
     </div>
   </div>
 
-
+  <!-- <tbody>
+    {% for pick in lists %}
+    <tr>
+        <td>{{pick.id}}</td>
+        <td>{{pick.content}}</td>
+        <td>{{pick.limit}}</td>
+        <td>{{pick.status}}</td>
+        <td>{{pick.insertdate}}</td>
+    </tr>
+    {% endfor %}
+  </tbody> -->
 
 </template>
 

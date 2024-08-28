@@ -1,14 +1,24 @@
 from flask import Flask, render_template, request
 import db
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='./frontend')
+
 
 @app.route('/')
 def show_data():
     databace = db.get_db()
     list = databace.execute("SELECT * FROM todos").fetchall()
     db.close_db()
-    return render_template('index.html', lists=list)
+    return render_template('App.vue', lists=list)
+
+# @app.route('/insert', methods=['POST'])
+# def show_data():
+#     databace = db.get_db()
+#     list = databace.execute("SELECT * FROM todos").fetchall()
+#     db.close_db()
+#     return render_template('index.html', lists=list)
+
+
 
 # # DBを指定して接続
 # connection = sqlite3.connect('todo.db')

@@ -10,21 +10,21 @@ const todo_data = ref([
     id: 1,
     content: '牛乳を買う',
     status: true,
-    limit: '2024/09/31',
+    limit: '2024-09-31',
     insertdate: '2024/08/31'
   },
   {
     id: 2,
     content: '砂糖を買う',
-    status: false,
-    limit: '2024/09/31',
+    status: true,
+    limit: '2024-09-31',
     insertdate: '2024/08/31'
   },
   {
     id: 3,
     content: '卵を買う',
-    status: false,
-    limit: '2024/09/31',
+    status: true,
+    limit: '2024-09-31',
     insertdate: '2024/08/31'
   }
 ]);
@@ -53,12 +53,20 @@ export default {
       todos: todo_data,
       allStatusTrue: allStatusTrue,
       allStatusFlase: allStatusFlase,
-      isOpen: false // 折りたたみ状態を管理する
+      isOpen: false, // 折りたたみ状態を管理する
+      selectedTodo: null // 選択されたTODOのデータを格納
     };
   },
   methods: {
     toggle() {
       this.isOpen = !this.isOpen; // 折りたたみ状態を切り替える
+    },
+    openEditModal(todo) {
+      this.selectedTodo = todo; // 選択されたTODOを設定
+    },
+    isOverdue(limitDate) {
+      const today = new Date().toISOString().split('T')[0]; // 今日の日付をYYYY-MM-DD形式で取得
+      return limitDate < today;
     }
   }
 };
@@ -92,20 +100,21 @@ export default {
           <th>{{ todo.content }}</th>
           <th> 
             <!-- 編集モーダルを開くボタン -->
-            <button  type="button" @click="showEditModal = true">編集</button> 
-            <EditModal v-if="showEditModal" @close="showEditModal = false"></EditModal>
+            <button  @click="openEditModal(todo)">編集</button>             
           </th>
           <th> 
             <!-- 削除ダイアログを開くボタン -->
             <button  type="button" @click="showDeleteModal = true">削除</button> 
-            <DeleteModal v-if="showDeleteModal" @close="showDeleteModal = false"></DeleteModal>
           </th>
         </template>
       </tr>
     </tbody>
   </table>
-  <!-- 登録モーダルを開くボタン -->
-  <button  type="button" @click="showAddModal = true">登録</button> 
+    <!-- 登録モーダルを開くボタン --> 
+  <button  type="button" @click="showAddModal = true">登録</button>
+  
+  <EditModal v-if="selectedTodo" :todo="selectedTodo" @close="selectedTodo = null"></EditModal>
+  <DeleteModal v-if="showDeleteModal" @close="showDeleteModal = false"></DeleteModal>
   <AddModal v-if="showAddModal" @close="showAddModal = false"></AddModal>
   
 
@@ -159,5 +168,10 @@ export default {
   padding: 10px;
   margin-top: 5px;
   border-radius: 5px;
+}
+
+.overdue {
+  color: red;
+  font-weight: bold;
 }
 </style>

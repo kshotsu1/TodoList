@@ -1,28 +1,34 @@
 <template>
-    <div class="modal-bg">
-      <div class="modal">
-        <p>タスクの編集</p>
-        <p>締切日</p>
-        <input name="date" type="date" />
-        <p>TODO内容</p>
-        <input type="text" />
-        <p>
-          <button>編集</button>
-          <button @click="closeModal">閉じる</button>
-        </p>
-      </div>
+  <div class="modal-bg">
+    <div class="modal">
+      <p>タスクの編集</p>
+      <p>締切日</p>
+      <p>{{ todo.limit }}</p>
+      <!-- 締切日の初期値を設定 -->
+      <input name="date" type="date" v-model="dateValue" />
+      <p>{{ todo.content }}</p>
+      <!-- テキストの初期値を設定 -->
+      <input type="text" v-model="textValue" />
+      <p>
+        <button>編集</button>
+        <button @click="$emit('close')">閉じる</button>
+      </p>
     </div>
+  </div>
 </template>
   
 <script>
 export default {
-methods: {
-    closeModal() {
-    this.$emit('close'); // 親コンポーネントにモーダルを閉じるイベントを送信
-    }
-}
+  data() {
+    return {
+      textValue: 'こんにちは', // テキストの初期値
+      dateValue: '2024-09-30' // 日付の初期値
+    };
+  },
+  props: ['todo']
 };
 </script>
+
 
 <style>
 .modal-bg {

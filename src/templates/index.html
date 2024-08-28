@@ -1,0 +1,33 @@
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <h1>TODO List</h1><br>
+        <div ass="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>todo</th>
+                        <th>締切日</th>
+                        <th>完了:1 未完了:0</th>
+                        <th>登録日</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pick in lists %}
+                    <tr>
+                        <td>{{pick.id}}</td>
+                        <td>{{pick.content}}</a></td>
+                        <td>{{pick.limit}}</td>
+                        <td>{{pick.statas}}</td>
+                        <td>{{pick.insertdate}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table><br>
+        </div>
+    </body>
+</html>

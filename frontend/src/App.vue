@@ -74,92 +74,80 @@ export default {
 
 
 <template>
-<h1>TODO List</h1>
+<html>
+  <h1>TODO List</h1>
+  <h2>UNDONE</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>完了</th>
+          <th>期限</th>
+          <th>TODO内容</th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <p v-if="allStatusTrue">
+        現在のTODOはありません。<br>
+        登録する場合は下の登録ボタンを押してください。<br>
+        ↓<br>
+      </p>
+      <tbody v-else>
+        <tr v-for="todo in todos" :key="todo.id">
+          <template v-if="!todo.status">
+            <th><input type="checkbox"></th>
+            <th>{{ todo.limit }}</th>
+            <th>{{ todo.content }}</th>
+            <th> 
+              <!-- 編集モーダルを開くボタン -->
+              <button  @click="openEditModal(todo)">編集</button>             
+            </th>
+            <th> 
+              <!-- 削除ダイアログを開くボタン -->
+              <button  type="button" @click="showDeleteModal = true">削除</button> 
+            </th>
+          </template>
+        </tr>
+      </tbody>
+    </table>
+      <!-- 登録モーダルを開くボタン --> 
+    <button  type="button" @click="showAddModal = true">登録</button>
+    
+    <EditModal v-if="selectedTodo" :todo="selectedTodo" @close="selectedTodo = null"></EditModal>
+    <DeleteModal v-if="showDeleteModal" @close="showDeleteModal = false"></DeleteModal>
+    <AddModal v-if="showAddModal" @close="showAddModal = false"></AddModal>
+    
 
-<h2>UNDONE</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>完了</th>
-        <th>期限</th>
-        <th>TODO内容</th>
-        <th></th>
-        <th></th>
-      </tr>
-    </thead>
-    <p v-if="allStatusTrue">
-      現在のTODOはありません。<br>
-      登録する場合は下の登録ボタンを押してください。<br>
-      ↓<br>
-    </p>
-    <tbody v-else>
-      <tr v-for="todo in todos" :key="todo.id">
-        <template v-if="!todo.status">
-          <th><input type="checkbox"></th>
-          <th>{{ todo.limit }}</th>
-          <th>{{ todo.content }}</th>
-          <th> 
-            <!-- 編集モーダルを開くボタン -->
-            <button  @click="openEditModal(todo)">編集</button>             
-          </th>
-          <th> 
-            <!-- 削除ダイアログを開くボタン -->
-            <button  type="button" @click="showDeleteModal = true">削除</button> 
-          </th>
-        </template>
-      </tr>
-    </tbody>
-  </table>
-    <!-- 登録モーダルを開くボタン --> 
-  <button  type="button" @click="showAddModal = true">登録</button>
-  
-  <EditModal v-if="selectedTodo" :todo="selectedTodo" @close="selectedTodo = null"></EditModal>
-  <DeleteModal v-if="showDeleteModal" @close="showDeleteModal = false"></DeleteModal>
-  <AddModal v-if="showAddModal" @close="showAddModal = false"></AddModal>
-  
-
- <!-- 履歴のアコーディオンメニュー -->
-  <div @click="toggle()" class="list-header">
-    <h2>DONE</h2>
-    <span>{{ isOpen ? '▲' : '▼' }}</span> <!-- 折りたたみ状態を表示 -->
-  </div>
-  <div v-if="isOpen" class="list-content">
-    <div v-if="allStatusFlase">
-      現在の完了済みTODOはありません。<br>
+  <!-- 履歴のアコーディオンメニュー -->
+    <div @click="toggle()" class="list-header">
+      <h2>DONE</h2>
+      <span>{{ isOpen ? '▲' : '▼' }}</span> <!-- 折りたたみ状態を表示 -->
     </div>
-    <div v-else>
-      <tr v-for="todo in todos" :key="todo.id">
-        <template v-if="todo.status">
-          <th><input type="checkbox"></th>
-          <th>{{ todo.limit }}</th>
-          <th>{{ todo.content }}</th>
-          <th> 
-            <!-- 編集モーダルを開くボタン -->
-            <button  type="button" @click="showLogEditModal = true">編集</button> 
-            <LogEditModal v-if="showLogEditModal" @close="showLogEditModal = false"></LogEditModal>
-          </th>
-          <th> 
-            <!-- 削除ダイアログを開くボタン -->
-            <button  type="button" @click="showDeleteModal = true">削除</button> 
-            <DeleteModal v-if="showDeleteModal" @close="showDeleteModal = false"></DeleteModal>
-          </th>
-        </template>
-      </tr>
+    <div v-if="isOpen" class="list-content">
+      <div v-if="allStatusFlase">
+        現在の完了済みTODOはありません。<br>
+      </div>
+      <div v-else>
+        <tr v-for="todo in todos" :key="todo.id">
+          <template v-if="todo.status">
+            <th><input type="checkbox"></th>
+            <th>{{ todo.limit }}</th>
+            <th>{{ todo.content }}</th>
+            <th> 
+              <!-- 編集モーダルを開くボタン -->
+              <button  type="button" @click="showLogEditModal = true">編集</button> 
+              <LogEditModal v-if="showLogEditModal" @close="showLogEditModal = false"></LogEditModal>
+            </th>
+            <th> 
+              <!-- 削除ダイアログを開くボタン -->
+              <button  type="button" @click="showDeleteModal = true">削除</button> 
+              <DeleteModal v-if="showDeleteModal" @close="showDeleteModal = false"></DeleteModal>
+            </th>
+          </template>
+        </tr>
+      </div>
     </div>
-  </div>
-
-  <!-- <tbody>
-    {% for pick in lists %}
-    <tr>
-        <td>{{pick.id}}</td>
-        <td>{{pick.content}}</td>
-        <td>{{pick.limit}}</td>
-        <td>{{pick.status}}</td>
-        <td>{{pick.insertdate}}</td>
-    </tr>
-    {% endfor %}
-  </tbody> -->
-
+  </html>
 </template>
 
 <style>

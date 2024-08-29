@@ -3,11 +3,21 @@
     <div class="modal">
       <p>タスクの登録</p>
       <p>締切日</p>
-      <input name="date" type="date" />
+      <input 
+        id="date" 
+        v-model="limit"
+        type="date"
+        placeholder="締切日を入力してください"
+        >
       <p>TODO内容</p>
-      <input type="text" />
+      <input 
+        id="content" 
+        v-model="content "
+        type="text"
+        placeholder="TODO内容を入力してください"
+        >
       <p>
-        <button>登録</button>
+        <button @click="insert" :disabled="!limit || !content">登録</button>
         <button @click="closeModal">閉じる</button>
       </p>
     </div>
@@ -16,9 +26,30 @@
   
 <script>
 export default {
+  data: () => ({
+    limit: null,
+    content: null,
+    success: null,
+  }),
+
   methods: {
     closeModal() {
       this.$emit('close'); // 親コンポーネントにモーダルを閉じるイベントを送信
+    },
+    insert(){
+      if (!this.limit || !this.content) {
+        return; // 日付またはTODO内容が未入力の場合
+      }
+
+      this.success = null;// 通信成功メッセージをリセット
+
+      const req = JSON.stringify({
+        limit: this.limit,
+        content: this.content,
+      });
+
+      this.axios
+        .post(`http://127.0.0.1:5000/insert`, req)
     }
   }
 };

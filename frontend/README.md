@@ -1,4 +1,4 @@
-# todo_list
+# bmi
 
 ## Project setup
 ```

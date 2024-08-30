@@ -5,7 +5,7 @@
       <p>締切日</p>
       <input 
         id="date" 
-        v-model="limit"
+        v-model="limit_date"
         type="date"
         placeholder="締切日を入力してください"
         >
@@ -17,8 +17,8 @@
         placeholder="TODO内容を入力してください"
         >
       <p>
-        <button @click="insert" :disabled="!limit || !content">登録</button>
-        <button @click="closeModal">閉じる</button>
+        <button @click="insert"  :disabled="!limit_date || !content">登録</button>
+        <button @click="$emit('close');">閉じる</button>
       </p>
     </div>
   </div>
@@ -27,29 +27,28 @@
 <script>
 export default {
   data: () => ({
-    limit: null,
+    limit_date: null,
     content: null,
     success: null,
   }),
 
   methods: {
-    closeModal() {
-      this.$emit('close'); // 親コンポーネントにモーダルを閉じるイベントを送信
-    },
     insert(){
-      if (!this.limit || !this.content) {
+      if (!this.limit_date || !this.content) {
         return; // 日付またはTODO内容が未入力の場合
       }
 
       this.success = null;// 通信成功メッセージをリセット
 
       const req = JSON.stringify({
-        limit: this.limit,
+        limit_date: this.limit_date,
         content: this.content,
       });
 
       this.axios
         .post(`http://127.0.0.1:5000/insert`, req)
+      
+      this.$emit('close');
     }
   }
 };

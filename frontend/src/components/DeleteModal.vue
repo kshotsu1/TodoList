@@ -1,25 +1,50 @@
 <template>
-    <div class="modal-bg">
-      <div class="modal">
-        <p>以下のTODOを削除しますか？</p>
-        <p>締切日</p>
-        <p>YYYY/mm/dd</p>
-        <p>TODO内容</p>
-        <p>~~~~~~~~</p>
-        <p>
-          <button @click="closeModal">はい</button>
-          <button @click="closeModal">いいえ</button>
-        </p>
-        
-      </div>
+  <div class="modal-bg">
+    <div class="modal">
+      <p>以下のTODOを削除しますか？</p>
+      <p>締切日</p>
+      <p>{{ limit_date }}</p>
+      <p>TODO内容</p>
+      <p>{{ content }}</p>
+      <p>
+        <button @click="del()">はい</button> 
+        <button @click="$emit('close')">いいえ</button>
+      </p>
     </div>
-  </template>
-  
+  </div>
+</template>
+
 <script>
 export default {
+  props: {
+    todo: {
+      type: Object,
+      required: true
+    }
+  },
+  data() {
+    return {
+      content: this.todo.content, // 初期値として todo.content を設定
+      limit_date: this.formatDate(this.todo.limit_date) // 初期値として todo.limit_date を設定
+    };
+  },
   methods: {
-    closeModal() {
-      this.$emit('close'); // 親コンポーネントにモーダルを閉じるイベントを送信
+    formatDate(dateString) {
+      const date = new Date(dateString);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0'); // 月は 0-based なので +1
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    },
+    del(){
+      console.log("delete");
+      // 削除ボタンが押されたときの処理
+      const req = JSON.stringify({
+        id: this.todo.id
+      });
+      this.axios
+      .post(`http://127.0.0.1:5000/delete`, req)
+      this.$emit('close');
     }
   }
 };
@@ -38,11 +63,9 @@ export default {
   align-items: center;
 }
 
-.modal { /* モーダル内の背景設定 */
+.modal {
   background: white;
   padding: 20px;
   border-radius: 8px;
 }
-
-
 </style>

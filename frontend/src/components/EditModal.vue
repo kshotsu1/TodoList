@@ -3,14 +3,13 @@
     <div class="modal">
       <p>タスクの編集</p>
       <p>締切日</p>
-      <p>{{ todo.limit }}</p>
       <!-- 締切日の初期値を設定 -->
-      <input name="date" type="date" v-model="dateValue" />
-      <p>{{ todo.content }}</p>
+      <p><input name="date" type="date" v-model="limit_date" /></p>
       <!-- テキストの初期値を設定 -->
-      <input type="text" v-model="textValue" />
+      <p>TODO内容</p>
+      <p><input type="text" v-model="content" /></p>
       <p>
-        <button>編集</button>
+        <button @click="edit()">編集</button>
         <button @click="$emit('close')">閉じる</button>
       </p>
     </div>
@@ -21,9 +20,32 @@
 export default {
   data() {
     return {
-      textValue: 'こんにちは', // テキストの初期値
-      dateValue: '2024-09-30' // 日付の初期値
+      content: this.todo.content, // テキストの初期値として todo.content を設定
+      limit_date: this.formatDate(this.todo.limit_date), // 日付の初期値として todo.limit を設定
+      id: this.todo.id
     };
+  },
+  methods: {
+    formatDate(dateString) {
+      // 日付が 'YYYY-MM-DD' 形式であることを確認するための補助関数
+      const date = new Date(dateString);
+      const year = date.getFullYear();
+      const month = String(date.getMonth()+1).padStart(2, '0'); // 月は 0-based なので +1
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    },
+    edit(){
+      console.log("edit");
+      // 編集ボタンが押されたときの処理
+      const req = JSON.stringify({
+        id: this.id,
+        limit_date: this.limit_date,
+        content: this.content
+      });
+      this.axios
+        .post(`http://127.0.0.1:5000/edit`, req)
+      this.$emit('close'); // 編集が完了したらモーダルを閉じる
+    }
   },
   props: ['todo']
 };

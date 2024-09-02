@@ -1,23 +1,30 @@
 <template>
   <div class="modal-bg">
     <div class="modal">
-      <p>タスクの編集</p>
+      <button @click="$emit('close')">戻る</button>
+
+      <p>以下のTODO内容で未完了リストに追加しますか？</p>
       <p>締切日</p>
-      <!-- 締切日の初期値を設定 -->
-      <p><input name="date" type="date" v-model="limit_date" /></p>
-      <!-- テキストの初期値を設定 -->
+      <p>{{ limit_date }}</p>
       <p>TODO内容</p>
-      <p><input type="text" v-model="content" /></p>
+      <p>{{ content }}</p>
       <p>
-        <button @click="edit()">編集</button>
-        <button @click="$emit('close')">閉じる</button>
+        <button @click="log_edit_add_list()">追加する</button>
+        <button @click="log_only_update()">履歴のみ更新</button>
       </p>
     </div>
   </div>
 </template>
-  
+
 <script>
+
 export default {
+  props: {
+    todo: {
+      type: Object,
+      required: true
+    }
+  },
   data() {
     return {
       content: this.todo.content, // テキストの初期値として todo.content を設定
@@ -34,9 +41,22 @@ export default {
       const day = String(date.getDate()).padStart(2, '0');
       return `${year}-${month}-${day}`;
     },
-    edit(){
-      
-      // 編集ボタンが押されたときの処理
+    
+    log_edit_add_list(){
+      //履歴の追加ボタンが押されたときの処理
+      const req = JSON.stringify({
+        id: this.id,
+        limit_date: this.limit_date,
+        content: this.content
+      });
+      this.axios
+        .post(`http://127.0.0.1:5000/log_edit_add_list`, req)
+      this.$emit('close'); // 編集が完了したらモーダルを閉じる
+      this.$emit('close'); // 編集が完了したらモーダルを閉じる
+    },
+
+    log_only_update(){
+      // 履歴の更新ボタンが押されたときの処理
       const req = JSON.stringify({
         id: this.id,
         limit_date: this.limit_date,
@@ -45,12 +65,14 @@ export default {
       this.axios
         .post(`http://127.0.0.1:5000/edit`, req)
       this.$emit('close'); // 編集が完了したらモーダルを閉じる
+      this.$emit('close'); // 編集が完了したらモーダルを閉じる
     }
-  },
-  props: ['todo']
-};
+  }
+  };
+  
+  // console.log(this.todo)
 </script>
-
+  
 
 <style>
 .modal-bg {

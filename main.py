@@ -102,6 +102,51 @@ def todo_telete():
     return {"message": 'TODOリストを削除しました。'}
 
 
+# 履歴を更新しリストに追加
+@app.route("/log_edit_add_list", methods=["POST"])
+def todo_Log_update():
+    connection = sqlite3.connect("todo.db")
+    cursor = connection.cursor()
+
+    data = request.get_json(force=True)
+
+    # 入力を数値に変換する。
+    id = data["id"]
+    limit_date = data["limit_date"]
+    content = data["content"]
+
+    update_sql = """
+        UPDATE todos SET limit_date = ?, content = ?, status = 0 WHERE id = ?
+    """
+    cursor.execute(update_sql, (limit_date, content, id))
+    connection.commit()
+    connection.close()
+
+    return {"message": 'TODOリストを更新しました。'}
+
+
+# 完了処理
+@app.route("/completion", methods=["POST"])
+def completion():
+    connection = sqlite3.connect("todo.db")
+    cursor = connection.cursor()
+
+    data = request.get_json(force=True)
+
+    # 入力を数値に変換する。
+    id = data["id"]
+
+    update_sql = """
+        UPDATE todos SET status = 1 WHERE id = ?
+    """
+    cursor.execute(update_sql, (id,))
+    connection.commit()
+    connection.close()
+
+    return {"message": 'TODOリストを更新しました。'}
+
+
+
 @app.route("/")
 def index():
     """フロントエンド側のページを表示する。

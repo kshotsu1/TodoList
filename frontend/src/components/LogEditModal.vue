@@ -1,43 +1,71 @@
+<template>
+  <div class="modal-bg">
+    <div class="modal">
+      <p>履歴タスクの編集</p>
+      <p>締切日</p>
+      <!-- 締切日の初期値を設定 -->
+      <p><input name="date" type="date" v-model="limit_date" /></p>
+      <!-- テキストの初期値を設定 -->
+      <p>TODO内容</p>
+      <p><input type="text" v-model="content" /></p>
+      <p>
+        <button @click="openLogRelodeModal(limit_date, content, id)">編集</button>
+
+        <!-- selectedRelodeTodoが設定されたときにRelodeModalを表示 -->
+        <RelodeModal 
+          v-if="selectedRelodeTodo" 
+          :todo="selectedRelodeTodo"
+          @close="selectedRelodeTodo = null"
+        ></RelodeModal>
+        <button @click="$emit('close');">閉じる</button>
+      </p>
+    </div>
+  </div>
+</template>
+
 <script>
-import RelodeModal from './LogRelode.vue'; 
+import RelodeModal from './dialog/LogRelode.vue'; 
 
 export default {
-components: {
-    RelodeModal
-},
-data() {
-    return {
-    showRelodeModal: false // 折りたたみ状態を管理する
-    };
-},
-methods: {
-    closeModal() {
-    this.$emit('close'); // 親コンポーネントにモーダルを閉じるイベントを送信
+  props: {
+    todo: {
+      type: Object,
+      required: true
     }
-}
+  },
+  components: {
+    RelodeModal
+  },
+  data() {
+    return {
+      showRelodeModal: false, // 編集モーダルの表示状態
+      selectedRelodeTodo: null, // 編集するTODOを保持
+      id: this.todo.id, // 初期値として todo.content を設定
+      content: this.todo.content, // 初期値として todo.content を設定
+      limit_date: this.formatDate(this.todo.limit_date), // 日付の初期値として todo.limit を設定
+    };
+  },
+  methods: {
+    formatDate(dateString) {
+      const date = new Date(dateString);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0'); // 月は 0-based なので +1
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    },
+    openLogRelodeModal(limit_date, content, id) {
+      // console.log("Logedit");
+      const todo = {
+        content: content,
+        limit_date: limit_date,
+        id: id,  // IDを自動生成する関数などを使う
+      };
+      this.selectedRelodeTodo = todo; // クリックされたTODOを選択
+    }
+  }
 };
 </script>
-
-
-<template>
-    <div class="modal-bg">
-      <div class="modal">
-        <p>履歴タスクの編集</p>
-        <p>締切日</p>
-        <input name="date" type="date" />
-        <p>TODO内容</p>
-        <input type="text" />
-        <p>
-          <button  type="button" @click="showRelodeModal = true">編集</button>
-          <RelodeModal v-if="showRelodeModal" @close="showRelodeModal = false"></RelodeModal>
-          <button @click="closeModal">閉じる</button>
-          
-        </p>
-      </div>
-    </div>
-</template>
   
-
 <style>
 .modal-bg {
   position: fixed;
@@ -51,20 +79,16 @@ methods: {
   align-items: center;
 }
 
-.modal { /* モーダル内の背景設定 */
+.modal {
   background: white;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 軽い影を追加 */
-  height: 600px; /* モーダルの高さを設定 */
-  width: 1000px; /* モーダルの幅を設定 */
-
-  /* モーダル内のコンテンツを中央揃え */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  height: 600px;
+  width: 1000px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 }
-
-
 </style>

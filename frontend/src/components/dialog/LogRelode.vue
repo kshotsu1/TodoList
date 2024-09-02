@@ -1,12 +1,12 @@
 <template>
   <div class="modal-bg">
     <div class="modal">
-      <button @click="$emit('close')">戻る</button>
+      <button class="buck_button" @click="$emit('close')">戻る</button>
 
-      <p>以下のTODO内容で未完了リストに追加しますか？</p>
-      <p>締切日</p>
+      <p>以下のTODO内容でUNDONEリストに追加しますか？</p>
+      <h3>締切日</h3>
       <p>{{ limit_date }}</p>
-      <p>TODO内容</p>
+      <h3>TODO内容</h3>
       <p>{{ content }}</p>
       <p>
         <button @click="log_edit_add_list()">追加する</button>
@@ -20,10 +20,7 @@
 
 export default {
   props: {
-    todo: {
-      type: Object,
-      required: true
-    }
+    todo: {type: Object, required: true}
   },
   data() {
     return {
@@ -44,36 +41,33 @@ export default {
     
     log_edit_add_list(){
       //履歴の追加ボタンが押されたときの処理
-      const req = JSON.stringify({
-        id: this.id,
-        limit_date: this.limit_date,
-        content: this.content
-      });
-      this.axios
-        .post(`http://127.0.0.1:5000/log_edit_add_list`, req)
-      this.$emit('close'); // 編集が完了したらモーダルを閉じる
-      this.$emit('close'); // 編集が完了したらモーダルを閉じる
+      try{
+      const req = JSON.stringify({id: this.id, limit_date: this.limit_date, content: this.content});
+      this.axios.post(`http://127.0.0.1:5000/log_edit_add_list`, req);
+      window.location.reload();
+        this.$emit('close'); // 'close' イベントを発火
+      } catch (error) {
+        console.error('編集エラー:', error);
+      }
     },
 
     log_only_update(){
       // 履歴の更新ボタンが押されたときの処理
-      const req = JSON.stringify({
-        id: this.id,
-        limit_date: this.limit_date,
-        content: this.content
-      });
-      this.axios
-        .post(`http://127.0.0.1:5000/edit`, req)
-      this.$emit('close'); // 編集が完了したらモーダルを閉じる
-      this.$emit('close'); // 編集が完了したらモーダルを閉じる
+      try{
+      const req = JSON.stringify({id: this.id, limit_date: this.limit_date, content: this.content});
+      this.axios.post(`http://127.0.0.1:5000/edit`, req);
+      window.location.reload();
+        this.$emit('close'); // 'close' イベントを発火
+      } catch (error) {
+        console.error('編集エラー:', error);
+      }
     }
-  }
-  };
+  },
+};
   
   // console.log(this.todo)
 </script>
   
-
 <style>
 .modal-bg {
   position: fixed;
@@ -101,6 +95,7 @@ export default {
   align-items: center;
   justify-content: center;
 }
+
 
 
 </style>

@@ -2,9 +2,9 @@
   <div class="modal-bg">
     <div class="modal">
       <p>以下のTODOを削除しますか？</p>
-      <p>締切日</p>
+      <h3>締切日</h3>
       <p>{{ limit_date }}</p>
-      <p>TODO内容</p>
+      <h3>TODO内容</h3>
       <p>{{ content }}</p>
       <p>
         <button @click="del()">はい</button> 
@@ -17,10 +17,8 @@
 <script>
 export default {
   props: {
-    todo: {
-      type: Object,
-      required: true
-    }
+    todo: {type: Object,required: true},
+    onClickSubmit: {type: Function, default: null}
   },
   data() {
     return {
@@ -36,15 +34,16 @@ export default {
       const day = String(date.getDate()).padStart(2, '0');
       return `${year}-${month}-${day}`;
     },
-    del(){
+    async del() {
       console.log("delete");
-      // 削除ボタンが押されたときの処理
-      const req = JSON.stringify({
-        id: this.todo.id
-      });
-      this.axios
-      .post(`http://127.0.0.1:5000/delete`, req)
-      this.$emit('close');
+      try {
+        const req = { id: this.todo.id };
+        await this.axios.post('http://127.0.0.1:5000/delete', req);
+        window.location.reload();
+        this.$emit('close'); // 'close' イベントを発火
+      } catch (error) {
+        console.error('削除エラー:', error);
+      }
     }
   }
 };
@@ -57,7 +56,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: white;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -68,4 +67,6 @@ export default {
   padding: 20px;
   border-radius: 8px;
 }
+
+
 </style>

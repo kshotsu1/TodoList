@@ -49,7 +49,7 @@ def insert_data():
 def get_todos():
     conn = sqlite3.connect('todo.db')
     cursor = conn.cursor()
-    cursor.execute("SELECT id, content, limit_date, status FROM todos")
+    cursor.execute("SELECT id, content, limit_date, status FROM todos order by limit_date asc")
     todos = cursor.fetchall()
     conn.close()
     return [{'id': row[0], 'content': row[1], 'limit_date': row[2], 'status':row[3] } for row in todos]

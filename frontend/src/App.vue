@@ -12,73 +12,72 @@
           <th></th>
         </tr>
       </thead>
-      <p v-if="allStatusTrue">
-        現在のTODOはありません。<br>
-        登録する場合は下の登録ボタンを押してください。<br>
-        ↓<br>
-      </p>
-      <tbody v-else>
+      <tbody>
+        <tr v-if="allStatusTrue">
+          <td colspan="5" class="no-tasks">
+            現在のTODOはありません。<br>
+            登録する場合は下の登録ボタンを押してください。<br>
+            ↓<br>
+          </td>
+        </tr>
         <tr v-for="todo in todos" :key="todo.id">
           <template v-if="!todo.status">
-            <!-- <th><input type="checkbox"  @change="handleChange"></th> -->
-            <th><button @click="completion(todo.id)">完了</button></th>
-            <th>{{ todo.limit_date }}</th>
-            <th>{{ todo.content }}</th>
-            <th> 
-              <!-- 編集モーダルを開くボタン -->
-              <button  @click="openEditModal(todo)">編集</button>             
-            </th>
-            <th> 
-              <!-- 削除ダイアログを開くボタン -->
-              <button  @click="openDelModal(todo)">削除</button> 
-            </th>
+          <td><button @click="completeTask(todo.id)">完了</button></td>
+          <td>{{ todo.limit_date }}</td>
+          <td>{{ todo.content }}</td>
+          <td><button @click="openEditModal(todo)">編集</button></td>
+          <td><button @click="openDelModal(todo)">削除</button></td>
           </template>
         </tr>
       </tbody>
     </table>
-    <!-- 登録モーダルを開くボタン --> 
-    <button  type="button" @click="showAddModal = true">登録</button>
+    
+    <!-- 登録ボタン -->
+    <button type="button" class="register-button" @click="showAddModal = true">登録</button>
+
     
     <EditModal v-if="selectedEsitTodo" :todo="selectedEsitTodo" @close="selectedEsitTodo = null"></EditModal>
     <DeleteModal v-if="selectedDelTodo" :todo="selectedDelTodo" @close="selectedDelTodo = null"></DeleteModal>
     <AddModal v-if="showAddModal" @close="showAddModal = false"></AddModal>
     
-
-    <!-- 履歴のアコーディオンメニュー -->
     <div @click="toggle()" class="list-header">
       <h2>DONE</h2>
-      <span>{{ isOpen ? '▲' : '▼' }}</span> <!-- 折りたたみ状態を表示 -->
+      <span>{{ isOpen ? '▲' : '▼' }}</span>
     </div>
     <div v-if="isOpen" class="list-content">
-      <div v-if="allStatusFlase">
-        現在の完了済みTODOはありません。<br>
-      </div>
-      <div v-else>
-        <tr v-for="todo in todos" :key="todo.id">
-          <template v-if="todo.status">
-            <!-- <th><input type="checkbox"></th> -->
-            <th>{{ todo.limit_date }}</th>
-            <th>{{ todo.content }}</th>
-            <th> 
-              <!-- 編集モーダルを開くボタン -->
-              <button @click="openLogEditModal(todo)">編集</button> 
-              <LogEditModal v-if="selectedLogEditTodo" :todo="selectedLogEditTodo" @close="selectedLogEditTodo = null"></LogEditModal>
-            </th>
-            <th> 
-              <!-- 削除ダイアログを開くボタン -->
-              <button  @click="openDelModal(todo)">削除</button> 
-              <DeleteModal v-if="selectedDelTodo" :todo="selectedDelTodo" @close="selectedDelTodo = null"></DeleteModal>
-            </th>
-          </template>
-        </tr>
-      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>期限</th>
+            <th>TODO内容</th>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-if="allStatusFlase">
+            <td colspan="4" class="no-tasks">
+              現在の完了済みTODOはありません。
+            </td>
+          </tr>
+          <tr v-for="todo in todos" :key="todo.id">
+            <template v-if="todo.status">
+            <td>{{ todo.limit_date }}</td>
+            <td>{{ todo.content }}</td>
+            <td><button @click="openLogEditModal(todo)">編集</button></td>
+            <td><button @click="openDelModal(todo)">削除</button></td>
+            </template>
+          </tr>
+        </tbody>
+      </table>
     </div>
+    
+    <LogEditModal v-if="selectedLogEditTodo" :todo="selectedLogEditTodo" @close="selectedLogEditTodo = null"></LogEditModal>
+    <DeleteModal v-if="selectedDelTodo" :todo="selectedDelTodo" @close="selectedDelTodo = null"></DeleteModal>
   </div>
 </template>
 
-
 <script>
-
 import EditModal from './components/EditModal.vue'; 
 import LogEditModal from './components/LogEditModal.vue'; 
 import AddModal from './components/AddModal.vue'; 
@@ -98,40 +97,33 @@ export default {
       showAddModal: false,
       showDeleteModal: false,
       showLogEditModal: false,
-      selectedEsitTodo: null, // 選択されたEditTODOのデータを格納
-      selectedDelTodo: null, // 選択されたDelTODOのデータを格納
-      selectedLogEditTodo: null, // 選択されたLogEditTODOのデータを格納
-      // todos: [{'id': 1, 'content': '牛乳を買う', 'limit_date': '2024-09-01', 'status': 0}, {'id': 2, 'content': '卵を買う', 'limit_date': '2024-10-15', 'status': 0}, {'id': 3, 'content': '砂糖を買う', 'limit_date': '2024-09-05', 'status': 1}, {'id': 4, 'content': '電気代の支払い', 'limit_date': '2024-09-03', 'status': 0}, {'id': 5, 'content': '大根を買う', 'limit_date': '2024-09-03', 'status': 0}, {'id': 6, 'content': 'キッチンペーパー', 'limit_date': '2024-08-20', 'status': 0}], // データベースから取得したタスク
+      selectedEsitTodo: null,
+      selectedDelTodo: null,
+      selectedLogEditTodo: null,
       todos: [],
-      isOpen: false, // 折りたたみ状態を管理する
-      
+      isOpen: false,
     };
   },
   computed: {
     allStatusTrue() {
-      return this.todos.every(todo => todo.status === true);
+      return this.todos.every(todo => todo.status === 1);
     },
     allStatusFlase() {
-      return this.todos.every(todo => todo.status === false);
+      return this.todos.every(todo => todo.status === 0);
     }
   },
   methods: {
     toggle() {
-      this.isOpen = !this.isOpen; // 折りたたみ状態を切り替える
+      this.isOpen = !this.isOpen;
     },
     openEditModal(todo) {
-      this.selectedEsitTodo = todo; // 選択されたTODOを設定
+      this.selectedEsitTodo = todo;
     },
     openDelModal(todo) {
-      this.selectedDelTodo = todo; // 選択されたTODOを設定
+      this.selectedDelTodo = todo;
     },
     openLogEditModal(todo) {
-      console.log(todo);
-      this.selectedLogEditTodo = todo; // 選択されたTODOを設定
-    },
-    isOverdue(limitDate) {
-      const today = new Date().toISOString().split('T')[0]; // 今日の日付をYYYY-MM-DD形式で取得 登録時の時間の初期値として使用
-      return limitDate < today;
+      this.selectedLogEditTodo = todo;
     },
     list_get(){
       axios.get('http://127.0.0.1:5000/get_list')
@@ -139,50 +131,195 @@ export default {
         this.todos = response.data; // 取得したデータをtodosに設定
       });
     },
-    handleChange(event) {
-      // チェックボックスの状態を取得
-      if (event.target.checked) {
-        this.chenge_status();
+    async completeTask(id) {
+      try {
+        const response = await axios.post('http://127.0.0.1:5000/completion', { id: id });
+        if (response.status === 200) {
+          this.status = 'TODOリストが更新されました！';
+          this.refreshTasks();
+        } else {
+          this.status = '処理に失敗しました';
+        }
+      } catch (error) {
+        console.error('完了処理エラー:', error);
+        this.status = '処理に失敗しました';
       }
     },
-    completion(id){
-      const req = JSON.stringify({
-        id: id,
-      });
-      this.axios
-      .post('http://127.0.0.1:5000/completion', req)
+    async refreshTasks() {
+      try {
+        const response = await axios.get('http://127.0.0.1:5000/get_list');
+        this.todos = response.data;
+      } catch (error) {
+        console.error('タスクリスト取得エラー:', error);
+      }
     }
-
   },
   mounted() {
-    this.list_get(); // コンポーネントがマウントされたらタスクを取得
+    this.list_get();
+    this.refreshTasks();
   }
 };
 </script>
 
-
-
-
 <style>
-.list-header {
-  background-color: #f0f0f0;
-  padding: 10px;
+/* 全体のレイアウト */
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 20px;
+  padding: 60px;
+  background-color: #ffffff; /* 背景色を白に */
+  color: #000000; /* 文字色を黒に */
+}
+
+
+
+/* テーブルのスタイル */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+th, td {
+  padding: 16px;
+  text-align: left;
+  border-bottom: 2px solid #ddd;
+}
+
+th {
+  background-color: #ffffff; /* 背景色を白に */
+  color: #000000; /* 文字色を黒に */
+  font-weight: bold;
+}
+
+td {
+  background-color: #ffffff; /* 背景色を白に */
+}
+
+tr:nth-child(even) {
+  background-color: #f8f9fa; /* 奇数行の背景色を少しグレーに */
+}
+
+tr:hover {
+  background-color: #e2e6ea; /* ホバー時の背景色 */
+}
+
+/* ボタンのスタイル */
+button {
+  background-color: #007bff;
+  color: #ffffff; /* ボタンの文字色を白に */
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
   cursor: pointer;
-  border-radius: 5px;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+/* 登録ボタンのスタイル */
+button.register-button {
+  background-color: #007bff;
+  color: #ffffff; /* 文字色を白に */
+  border: none;
+  border-radius: 6px;
+  padding: 10px 160px; /* 横長にするために左右のパディングを増やす */
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  display: block; /* ブロック要素にして */
+  margin: 20px auto; /* 上下のマージンを設定して中央に配置 */
+}
+
+button.register-button:hover {
+  background-color: #0056b3;
+}
+
+
+/* モーダルのスタイル */
+.modal-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
 }
 
-.list-content {
-  background-color: #e0e0e0;
-  padding: 10px;
-  margin-top: 5px;
-  border-radius: 5px;
+.modal { /* モーダル内の背景設定 */
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 軽い影を追加 */
+  height: 600px; /* モーダルの高さを設定 */
+  width: 1000px; /* モーダルの幅を設定 */
 }
 
-.overdue {
-  color: red;
+/* アコーディオンメニュー */
+.list-header {
+  background-color: #ffffff; /* 背景色を白に */
+  padding: 15px;
+  cursor: pointer;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 18px;
   font-weight: bold;
+  color: #000000; /* 文字色を黒に */
+  border: 1px solid #ddd;
+}
+
+.list-header:hover {
+  background-color: #f1f1f1; /* ホバー時の背景色 */
+}
+
+.list-content {
+  padding: 15px;
+  border-radius: 8px;
+  background-color: #ffffff; /* 背景色を白に */
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.no-tasks {
+  text-align: center;
+  color: #000000; /* 文字色を黒に */
+}
+
+p {
+  margin: 0;
+  color: #000000; /* 文字色を黒に */
+}
+
+h1, h2 {
+  margin-top: 0;
+  color: #000000; /* 文字色を黒に */
+}
+
+.add-button {
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.add-button:hover {
+  background-color: #0056b3;
 }
 </style>

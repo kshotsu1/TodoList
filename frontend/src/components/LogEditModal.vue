@@ -2,11 +2,11 @@
   <div class="modal-bg">
     <div class="modal">
       <p>履歴タスクの編集</p>
-      <p>締切日</p>
+      <h3>締切日</h3>
       <!-- 締切日の初期値を設定 -->
       <p><input name="date" type="date" v-model="limit_date" /></p>
       <!-- テキストの初期値を設定 -->
-      <p>TODO内容</p>
+      <h3>TODO内容</h3>
       <p><input type="text" v-model="content" /></p>
       <p>
         <button @click="openLogRelodeModal(limit_date, content, id)">編集</button>

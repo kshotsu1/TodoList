@@ -9,8 +9,12 @@
       <h3>TODO内容</h3>
       <input id="content" type="text" v-model="content">
       <p>
-        <button @click="edit()">編集</button>
-        <button @click="$emit('close')">閉じる</button>
+        <button @click="edit()">
+          <img src="../assets/edit.png" alt="編集" style="width: 24px; height: 24px;">
+        </button>
+        <button @click="$emit('close')">
+          <img src="../assets/back.png" alt="戻る" style="width: 24px; height: 24px;">
+        </button>
       </p>
     </div>
   </div>

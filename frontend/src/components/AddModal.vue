@@ -4,11 +4,15 @@
       <h2>～タスクの登録～</h2>
       <h3>締切日</h3>
       <input id="date" v-model="limit_date" type="date" placeholder="締切日を入力してください">
-      <h3>TODO内容</h3>
-      <input id="content" v-model="content" type="text" placeholder="TODO内容を入力してください">
+      <h3>TODO内容 ({{ content.length }}/50)</h3>
+      <input id="content" v-model="content" type="text" placeholder="50文字以内で入力してください" maxlength="50">
       <p>
-        <button @click="insert"  :disabled="!limit_date || !content">登録</button>
-        <button @click="$emit('close');">閉じる</button>
+        <button @click="insert"  :disabled="!limit_date || !content">
+          <img src="../assets/add.png" alt="追加" style="width: 24px; height: 24px;">
+        </button>
+        <button @click="$emit('close');">
+          <img src="../assets/back.png" alt="戻る" style="width: 24px; height: 24px;">
+        </button>
       </p>
     </div>
   </div>
@@ -18,7 +22,7 @@
 export default {
   data: () => ({
     limit_date: null,
-    content: null,
+    content: '',
     success: null,
   }),
 

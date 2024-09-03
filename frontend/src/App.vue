@@ -5,11 +5,11 @@
     <table>
       <thead>
         <tr>
-          <th>完了</th>
-          <th>期限</th>
-          <th>TODO内容</th>
-          <th></th>
-          <th></th>
+          <th style="text-align: center;">完了</th>
+          <th style="text-align: center;">期限</th>
+          <th style="text-align: center;">TODO内容</th>
+          <th style="text-align: center;">編集</th>
+          <th style="text-align: center;">削除</th>
         </tr>
       </thead>
       <tbody>
@@ -22,18 +22,26 @@
         </tr>
         <tr v-for="todo in todos" :key="todo.id">
           <template v-if="!todo.status">
-          <td><button @click="completeTask(todo.id)">完了</button></td>
-          <td>{{ todo.limit_date }}</td>
-          <td>{{ todo.content }}</td>
-          <td><button @click="openEditModal(todo)">編集</button></td>
-          <td><button @click="openDelModal(todo)">削除</button></td>
+          <td><button @click="completeTask(todo.id)">
+            <img src="./assets/check.png" alt="完了" style="width: 24px; height: 24px;">
+          </button></td>
+          <td :class="{ 'overdue': isOverdue(todo.limit_date) }">{{ todo.limit_date }}</td>
+          <td :class="{ 'overdue': isOverdue(todo.limit_date) }">{{ todo.content }}</td>
+          <td><button @click="openEditModal(todo)">
+            <img src="./assets/edit.png" alt="編集" style="width: 24px; height: 24px;">
+          </button></td>
+          <td><button @click="openDelModal(todo)">
+            <img src="./assets/delet.png" alt="削除" style="width: 24px; height: 24px;">
+          </button></td>
           </template>
         </tr>
       </tbody>
     </table>
     
     <!-- 登録ボタン -->
-    <button type="button" class="register-button" @click="showAddModal = true">登録</button>
+    <button type="button" class="register-button" @click="showAddModal = true">
+      <img src="./assets/add.png" alt="追加" style="width: 24px; height: 24px;">
+    </button>
 
     
     <EditModal v-if="selectedEsitTodo" :todo="selectedEsitTodo" @close="selectedEsitTodo = null"></EditModal>
@@ -64,8 +72,12 @@
             <template v-if="todo.status">
             <td>{{ todo.limit_date }}</td>
             <td>{{ todo.content }}</td>
-            <td><button @click="openLogEditModal(todo)">編集</button></td>
-            <td><button @click="openDelModal(todo)">削除</button></td>
+            <td><button @click="openLogEditModal(todo)">
+              <img src="./assets/edit.png" alt="編集" style="width: 24px; height: 24px;">
+            </button></td>
+            <td><button @click="openDelModal(todo)">
+              <img src="./assets/delet.png" alt="削除" style="width: 24px; height: 24px;">
+            </button></td>
             </template>
           </tr>
         </tbody>
@@ -152,6 +164,13 @@ export default {
       } catch (error) {
         console.error('タスクリスト取得エラー:', error);
       }
+    },
+    isOverdue(limit_date) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0)
+      const deadline = new Date(limit_date);
+      deadline.setHours(0, 0, 0, 0);
+      return deadline < today;
     }
   },
   mounted() {
@@ -166,7 +185,7 @@ export default {
 body {
   font-family: 'Roboto', sans-serif;
   margin: 20px;
-  padding: 60px;
+  padding: 90px;
   background-color: #ffffff; /* 背景色を白に */
   color: #000000; /* 文字色を黒に */
 }
@@ -206,7 +225,7 @@ tr:hover {
 
 /* ボタンのスタイル */
 button {
-  background-color: #007bff;
+  background-color: #36b8ff;
   color: #ffffff; /* ボタンの文字色を白に */
   border: none;
   border-radius: 6px;
@@ -217,7 +236,7 @@ button {
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #36b8ff;
 }
 
 button:disabled {
@@ -227,7 +246,7 @@ button:disabled {
 
 /* 登録ボタンのスタイル */
 button.register-button {
-  background-color: #007bff;
+  background-color: #36b8ff;
   color: #ffffff; /* 文字色を白に */
   border: none;
   border-radius: 6px;
@@ -240,7 +259,7 @@ button.register-button {
 }
 
 button.register-button:hover {
-  background-color: #0056b3;
+  background-color: #36b8ff;
 }
 
 
@@ -308,7 +327,7 @@ h1, h2 {
 }
 
 .add-button {
-  background-color: #007bff;
+  background-color: #36b8ff;
   color: #ffffff;
   border: none;
   border-radius: 6px;
@@ -320,6 +339,15 @@ h1, h2 {
 }
 
 .add-button:hover {
-  background-color: #0056b3;
+  background-color: #36b8ff;
+}
+
+.overdue {
+  color: #ff0000; /* 赤文字 */
+  font-weight: bold; /* ボールド */
+}
+
+th, td {
+  text-align: center;
 }
 </style>

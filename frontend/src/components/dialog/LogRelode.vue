@@ -1,7 +1,9 @@
 <template>
   <div class="modal-bg">
     <div class="modal">
-      <button class="buck_button" @click="$emit('close')">戻る</button>
+      <button class="buck_button" @click="$emit('close')">
+        <img src="../../assets/back.png" alt="閉じる" style="width: 24px; height: 24px;">
+      </button>
 
       <p>以下のTODO内容でUNDONEリストに追加しますか？</p>
       <h3>締切日</h3>

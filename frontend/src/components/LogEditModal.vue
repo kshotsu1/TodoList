@@ -9,7 +9,9 @@
       <h3>TODO内容</h3>
       <p><input type="text" v-model="content" /></p>
       <p>
-        <button @click="openLogRelodeModal(limit_date, content, id)">編集</button>
+        <button @click="openLogRelodeModal(limit_date, content, id)">
+          <img src="../assets/edit.png" alt="編集" style="width: 24px; height: 24px;">
+        </button>
 
         <!-- selectedRelodeTodoが設定されたときにRelodeModalを表示 -->
         <RelodeModal 
@@ -17,7 +19,9 @@
           :todo="selectedRelodeTodo"
           @close="selectedRelodeTodo = null"
         ></RelodeModal>
-        <button @click="$emit('close');">閉じる</button>
+        <button @click="$emit('close');">
+          <img src="../assets/back.png" alt="戻る" style="width: 24px; height: 24px;">
+        </button>
       </p>
     </div>
   </div>

@@ -1,28 +1,27 @@
 <template>
   <div class="modal-bg">
     <div class="modal">
-      <p>履歴タスクの編集</p>
+      <h2>～履歴の編集～</h2>
       <h3>締切日</h3>
       <!-- 締切日の初期値を設定 -->
-      <p><input name="date" type="date" v-model="limit_date" /></p>
+      <input id="date" type="date" v-model="limit_date">
       <!-- テキストの初期値を設定 -->
       <h3>TODO内容</h3>
-      <p><input type="text" v-model="content" /></p>
+      <input id="content" type="text" v-model="content">
       <p>
         <button @click="openLogRelodeModal(limit_date, content, id)">
-          <img src="../assets/edit.png" alt="編集" style="width: 24px; height: 24px;">
+          実行
         </button>
-
-        <!-- selectedRelodeTodoが設定されたときにRelodeModalを表示 -->
-        <RelodeModal 
-          v-if="selectedRelodeTodo" 
-          :todo="selectedRelodeTodo"
-          @close="selectedRelodeTodo = null"
-        ></RelodeModal>
         <button @click="$emit('close');">
-          <img src="../assets/back.png" alt="戻る" style="width: 24px; height: 24px;">
+          戻る
         </button>
       </p>
+      <!-- selectedRelodeTodoが設定されたときにRelodeModalを表示 -->
+      <RelodeModal   
+        v-if="selectedRelodeTodo" 
+        :todo="selectedRelodeTodo"
+        @close="selectedRelodeTodo = null"
+      ></RelodeModal>
     </div>
   </div>
 </template>
@@ -96,9 +95,18 @@ export default {
   justify-content: center;
 }
 
+input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+  margin-bottom: 15px;
+  box-sizing: border-box; /* パディングとボーダーを幅に含める */
+}
+
 #date{
   font-family:'Roboto', sans-serif;
-  font: size 16px;
+  font: size 20px;
   text-align: center;
 }
 #content {

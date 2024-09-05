@@ -24,7 +24,7 @@ export default {
   data: () => ({
     limit_date: null,
     content: '',
-    success: null,
+    message: null,
   }),
 
   methods: {
@@ -32,12 +32,13 @@ export default {
       if (!this.limit_date || !this.content) {
         return; // 日付またはTODO内容が未入力の場合
       }
-      this.success = null;// 通信成功メッセージをリセット
+      this.message = null;// 通信成功メッセージをリセット
       try{
         const req = JSON.stringify({limit_date: this.limit_date, content: this.content,});
-        await this.axios.post(`http://127.0.0.1:5000/insert`, req);
+        const response = await this.axios.post(`http://127.0.0.1:5000/insert`, req);
+        this.$emit('insert_success', response.data.message);
         window.location.reload();
-        this.$emit('close'); // 'close' イベントを発火
+        // this.$emit('close'); // 'close' イベントを発火
       } catch (error) {
         console.error('編集エラー:', error);
       }

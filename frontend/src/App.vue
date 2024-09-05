@@ -1,5 +1,6 @@
 <template>
   <div>
+    <div class="tost_msg">{{ message }}</div>
     <h1>TODO List</h1>
     <h2>Not Done</h2>
     <table>
@@ -24,17 +25,27 @@
         </tr>
         <tr v-for="todo in todos" :key="todo.id">
           <template v-if="!todo.status">
-          <td><button @click="completeTask(todo.id, todo.status)">
-            <img src="./assets/check.png" alt="完了" style="width: 24px; height: 24px;">
-          </button></td>
-          <td :class="{ 'overdue': isOverdue(todo.limit_date) }">{{ todo.limit_date }}</td>
-          <td :class="{ 'overdue': isOverdue(todo.limit_date) }">{{ todo.content }}</td>
-          <td><button @click="openEditModal(todo)">
-            <img src="./assets/edit.png" alt="編集" style="width: 24px; height: 24px;">
-          </button></td>
-          <td><button @click="openDelModal(todo)">
-            <img src="./assets/delet.png" alt="削除" style="width: 24px; height: 24px;">
-          </button></td>
+            <td>
+              <button @click="completeTask(todo.id, todo.status)">
+                <img src="./assets/check.png" alt="完了" style="width: 24px; height: 24px;">
+              </button>
+            </td>
+            <td :class="{ 'overdue': isOverdue(todo.limit_date) }">
+              {{ todo.limit_date }}
+            </td>
+            <td :class="{ 'overdue': isOverdue(todo.limit_date) }">
+              {{ todo.content }}
+            </td>
+            <td>
+              <button @click="openEditModal(todo)">
+                <img src="./assets/edit.png" alt="編集" style="width: 24px; height: 24px;">
+              </button>
+            </td>
+            <td>
+              <button @click="openDelModal(todo)">
+                <img src="./assets/delet.png" alt="削除" style="width: 24px; height: 24px;">
+              </button>
+            </td>
           </template>
         </tr>
       </tbody>
@@ -46,9 +57,24 @@
     </button>
 
     
-    <EditModal v-if="selectedEsitTodo" :todo="selectedEsitTodo" @close="selectedEsitTodo = null"></EditModal>
-    <DeleteModal v-if="selectedDelTodo" :todo="selectedDelTodo" @close="selectedDelTodo = null"></DeleteModal>
-    <AddModal v-if="showAddModal" @close="showAddModal = false"></AddModal>
+    <EditModal 
+      v-if="selectedEsitTodo" 
+      v-on:edit_success="recieve_edit_success" 
+      :todo="selectedEsitTodo" 
+      @close="selectedEsitTodo = null"
+    ></EditModal>
+
+    <DeleteModal 
+      v-if="selectedDelTodo" 
+      :todo="selectedDelTodo" 
+      @close="selectedDelTodo = null"
+    ></DeleteModal>
+
+    <AddModal 
+      v-if="showAddModal" 
+      v-on:insert_success="recieve_insert_success" 
+      @close="showAddModal = false"
+    ></AddModal>
     
     <div @click="toggle()" class="list-header">
       <h2>Done</h2>
@@ -75,18 +101,23 @@
           </tr>
           <tr v-for="todo in todos" :key="todo.id">
             <template v-if="todo.status">
-            <td><button @click="completeTask(todo.id, todo.status)">
-              <img src="./assets/back.png" alt="戻す" style="width: 24px; height: 24px;">
-            </button>
-            </td>
-            <td>{{ todo.limit_date }}</td>
-            <td>{{ todo.content }}</td>
-            <td><button @click="openLogEditModal(todo)">
-              <img src="./assets/edit.png" alt="編集" style="width: 24px; height: 24px;">
-            </button></td>
-            <td><button @click="openDelModal(todo)">
-              <img src="./assets/delet.png" alt="削除" style="width: 24px; height: 24px;">
-            </button></td>
+              <td>
+                <button @click="completeTask(todo.id, todo.status)">
+                  <img src="./assets/back.png" alt="戻す" style="width: 24px; height: 24px;">
+                </button>
+              </td>
+              <td>{{ todo.limit_date }}</td>
+              <td>{{ todo.content }}</td>
+              <td>
+                <button @click="openLogEditModal(todo)">
+                  <img src="./assets/edit.png" alt="編集" style="width: 24px; height: 24px;">
+                </button>
+              </td>
+              <td>
+                <button @click="openDelModal(todo)">
+                  <img src="./assets/delet.png" alt="削除" style="width: 24px; height: 24px;">
+                </button>
+              </td>
             </template>
           </tr>
         </tbody>
@@ -120,38 +151,37 @@ export default {
       selectedEsitTodo: null,
       selectedDelTodo: null,
       selectedLogEditTodo: null,
+      message: null,
       todos: [],
       isOpen: true,
     };
   },
   computed: {
-    allStatusTrue() {
+    // Not Done、Doneそれぞれが空の際、メッセージを表示させるための算出プロパティ
+    allStatusTrue() { // 全てのタスクが完了しているかどうかを判定するメソッド
       return this.todos.every(todo => todo.status === 1);
     },
-    allStatusFlase() {
+    allStatusFlase() { // 全てのタスクが未完了かどうかを判定するメソッド
       return this.todos.every(todo => todo.status === 0);
     }
   },
   methods: {
-    toggle() {
-      this.isOpen = !this.isOpen;
-    },
-    openEditModal(todo) {
-      this.selectedEsitTodo = todo;
-    },
-    openDelModal(todo) {
-      this.selectedDelTodo = todo;
-    },
-    openLogEditModal(todo) {
-      this.selectedLogEditTodo = todo;
-    },
-    list_get(){
+
+    openEditModal(todo) {this.selectedEsitTodo = todo; },
+    openDelModal(todo) {this.selectedDelTodo = todo; },
+    openLogEditModal(todo) {this.selectedLogEditTodo = todo; },
+    toggle() {this.isOpen = !this.isOpen; },
+
+
+    list_get(){ // リスト取得メソッド
       axios.get('http://127.0.0.1:5000/get_list')
       .then(response  => {
         this.todos = response.data; // 取得したデータをtodosに設定
       });
     },
-    async completeTask(id, status) {
+
+
+    async completeTask(id, status) { // タスク完了処理を行うメソッド
       try {
         const response = await axios.post('http://127.0.0.1:5000/completion', { id: id, status: status });
         if (response.status === 200) {
@@ -165,7 +195,7 @@ export default {
         this.status = '処理に失敗しました';
       }
     },
-    async refreshTasks() {
+    async refreshTasks() { // タスクリストを取得するメソッド
       try {
         const response = await axios.get('http://127.0.0.1:5000/get_list');
         this.todos = response.data;
@@ -173,16 +203,27 @@ export default {
         console.error('タスクリスト取得エラー:', error);
       }
     },
-    isOverdue(limit_date) {
+
+
+    isOverdue(limit_date) { // 期限が過ぎているかどうかを判定するメソッド
       const today = new Date();
       today.setHours(0, 0, 0, 0)
       const deadline = new Date(limit_date);
       deadline.setHours(0, 0, 0, 0);
       return deadline < today;
+    },
+
+    recieve_insert_success(value) {
+      this.message = value;
+      this.list_get();
+    },
+    recieve_edit_success(value) {
+      this.message = value;
+      this.list_get();
     }
   },
   mounted() {
-    this.list_get();
+    // this.list_get();
     this.refreshTasks();
   }
 };
@@ -197,7 +238,6 @@ body {
   background-color: #ffffff; /* 背景色を白に */
   color: #000000; /* 文字色を黒に */
 }
-
 
 /* テーブルのスタイル */
 table {
@@ -362,5 +402,12 @@ th, td {
   text-align: center;
   font-weight: bold; /* ボールド */
   font-size: large;
+}
+
+.tost_msg {
+
+  font-size: 20px;
+  text-align: center;
+
 }
 </style>

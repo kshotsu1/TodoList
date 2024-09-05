@@ -10,10 +10,10 @@
       <input id="content" type="text" v-model="content">
       <p>
         <button @click="edit()">
-          <img src="../assets/edit.png" alt="編集" style="width: 24px; height: 24px;">
+          実行
         </button>
         <button @click="$emit('close')">
-          <img src="../assets/back.png" alt="戻る" style="width: 24px; height: 24px;">
+          戻る
         </button>
       </p>
     </div>
@@ -42,7 +42,8 @@ export default {
       console.log("edit");
       try {
         const req =  JSON.stringify({ id: this.todo.id, limit_date: this.limit_date, content: this.content });
-        await this.axios.post(`http://127.0.0.1:5000/edit`, req);
+        const response = await this.axios.post(`http://127.0.0.1:5000/edit`, req);
+        this.$emit('edit_success', response.data.message);
         window.location.reload();
         this.$emit('close'); // 'close' イベントを発火
       } catch (error) {
@@ -115,7 +116,7 @@ button:disabled {
 
 #date{
   font-family:'Roboto', sans-serif;
-  font: size 16px;
+  font: size 20px;
   text-align: center;
 }
 #content {

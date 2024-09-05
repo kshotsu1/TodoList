@@ -8,7 +8,8 @@
       <input id="content" v-model="content" type="text" placeholder="50文字以内で入力してください" maxlength="50">
       <p>
         <button @click="insert"  :disabled="!limit_date || !content">
-          <img src="../assets/add.png" alt="追加" style="width: 24px; height: 24px;">
+          <!-- <img src="../assets/add.png" alt="追加" style="width: 24px; height: 24px;">-->
+          追加
         </button>
         <button @click="$emit('close');">
           <img src="../assets/back.png" alt="戻る" style="width: 24px; height: 24px;">
@@ -103,4 +104,14 @@ button:disabled {
   cursor: not-allowed;
 }
 
+#date{
+  font-family:'Roboto', sans-serif;
+  font: size 16px;
+  text-align: center;
+}
+#content {
+    text-align: center; /* テキストとプレースホルダーを中央揃え */
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+}
 </style>

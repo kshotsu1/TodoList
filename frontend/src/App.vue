@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>TODO List</h1>
-    <h2>UNDONE</h2>
+    <h2>Not Done</h2>
     <table>
       <thead>
         <tr>
@@ -15,14 +15,16 @@
       <tbody>
         <tr v-if="allStatusTrue">
           <td colspan="5" class="no-tasks">
-            現在のTODOはありません。<br>
-            登録する場合は下の登録ボタンを押してください。<br>
-            ↓<br>
+            <div class="no-tasks">
+              現在のTODOは全て完了しています。<br>
+              新しいTODOを登録するか、完了済みTODOを確認してください。<br>
+              ↓<br>
+            </div>
           </td>
         </tr>
         <tr v-for="todo in todos" :key="todo.id">
           <template v-if="!todo.status">
-          <td><button @click="completeTask(todo.id)">
+          <td><button @click="completeTask(todo.id, todo.status)">
             <img src="./assets/check.png" alt="完了" style="width: 24px; height: 24px;">
           </button></td>
           <td :class="{ 'overdue': isOverdue(todo.limit_date) }">{{ todo.limit_date }}</td>
@@ -49,27 +51,34 @@
     <AddModal v-if="showAddModal" @close="showAddModal = false"></AddModal>
     
     <div @click="toggle()" class="list-header">
-      <h2>DONE</h2>
+      <h2>Done</h2>
       <span>{{ isOpen ? '▲' : '▼' }}</span>
     </div>
     <div v-if="isOpen" class="list-content">
       <table>
         <thead>
           <tr>
-            <th>期限</th>
-            <th>TODO内容</th>
-            <th></th>
-            <th></th>
+            <th style="text-align: center;">戻す</th>
+            <th style="text-align: center;">期限</th>
+            <th style="text-align: center;">TODO内容</th>
+            <th style="text-align: center;">編集</th>
+            <th style="text-align: center;">削除</th>
           </tr>
         </thead>
         <tbody>
           <tr v-if="allStatusFlase">
-            <td colspan="4" class="no-tasks">
-              現在の完了済みTODOはありません。
+            <td colspan="5" class="no-tasks">
+              <div class="no-tasks">
+                現在の完了済みTODOはありません。
+              </div>
             </td>
           </tr>
           <tr v-for="todo in todos" :key="todo.id">
             <template v-if="todo.status">
+            <td><button @click="completeTask(todo.id, todo.status)">
+              <img src="./assets/back.png" alt="戻す" style="width: 24px; height: 24px;">
+            </button>
+            </td>
             <td>{{ todo.limit_date }}</td>
             <td>{{ todo.content }}</td>
             <td><button @click="openLogEditModal(todo)">
@@ -83,7 +92,6 @@
         </tbody>
       </table>
     </div>
-    
     <LogEditModal v-if="selectedLogEditTodo" :todo="selectedLogEditTodo" @close="selectedLogEditTodo = null"></LogEditModal>
     <DeleteModal v-if="selectedDelTodo" :todo="selectedDelTodo" @close="selectedDelTodo = null"></DeleteModal>
   </div>
@@ -113,7 +121,7 @@ export default {
       selectedDelTodo: null,
       selectedLogEditTodo: null,
       todos: [],
-      isOpen: false,
+      isOpen: true,
     };
   },
   computed: {
@@ -143,9 +151,9 @@ export default {
         this.todos = response.data; // 取得したデータをtodosに設定
       });
     },
-    async completeTask(id) {
+    async completeTask(id, status) {
       try {
-        const response = await axios.post('http://127.0.0.1:5000/completion', { id: id });
+        const response = await axios.post('http://127.0.0.1:5000/completion', { id: id, status: status });
         if (response.status === 200) {
           this.status = 'TODOリストが更新されました！';
           this.refreshTasks();
@@ -189,7 +197,6 @@ body {
   background-color: #ffffff; /* 背景色を白に */
   color: #000000; /* 文字色を黒に */
 }
-
 
 
 /* テーブルのスタイル */
@@ -349,5 +356,11 @@ h1, h2 {
 
 th, td {
   text-align: center;
+}
+
+.no-tasks {
+  text-align: center;
+  font-weight: bold; /* ボールド */
+  font-size: large;
 }
 </style>

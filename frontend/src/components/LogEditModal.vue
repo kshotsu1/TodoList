@@ -95,4 +95,15 @@ export default {
   align-items: center;
   justify-content: center;
 }
+
+#date{
+  font-family:'Roboto', sans-serif;
+  font: size 16px;
+  text-align: center;
+}
+#content {
+    text-align: center; /* テキストとプレースホルダーを中央揃え */
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+}
 </style>

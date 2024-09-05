@@ -53,10 +53,9 @@ def get_todos():
     todos = cursor.fetchall()
     conn.close()
     return [{'id': row[0], 'content': row[1], 'limit_date': row[2], 'status':row[3] } for row in todos]
-
 @app.route("/get_list", methods=["GET"])
 def todos():
-    print(get_todos())
+    # print(get_todos())
     return jsonify(get_todos())
 
 
@@ -135,11 +134,18 @@ def completion():
 
     # 入力を数値に変換する。
     id = data["id"]
+    status = data["status"]
 
+    if status == 0:
+        status = 1
+    elif status == 1:
+        status = 0
+
+    print(status)
     update_sql = """
-        UPDATE todos SET status = 1 WHERE id = ?
+        UPDATE todos SET status = ? WHERE id = ?
     """
-    cursor.execute(update_sql, (id,))
+    cursor.execute(update_sql, (status,id))
     connection.commit()
     connection.close()
 

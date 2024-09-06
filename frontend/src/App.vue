@@ -1,9 +1,9 @@
 <template>
   <div>
     <title>TODO</title>
-    <div class="tost_msg">{{ message }}</div>
-    <h1>TODO List</h1>
-    <h2>Not Done</h2>
+    <div v-if="message" class="tost_msg">{{ message }}</div>
+    <h1 class="todo-title">TODO List</h1>
+    <h2 class="todo-subtitle">Not Done</h2>
     <table>
       <thead>
         <tr>
@@ -79,7 +79,7 @@
     ></AddModal>
     
     <div @click="toggle()" class="list-header">
-      <h2>Done</h2>
+      <h2 class="todo-subtitle">Done</h2>
       <span>{{ isOpen ? '▲' : '▼' }}</span>
     </div>
     <div v-if="isOpen" class="list-content">
@@ -158,7 +158,7 @@ export default {
       selectedEsitTodo: null,
       selectedDelTodo: null,
       selectedLogEditTodo: null,
-      message: null,
+      message: '　',
       todos: [],
       isOpen: true,
     };
@@ -199,18 +199,8 @@ export default {
      * @return {void}
      * */
     async completeTask(id, status) { // 
-      try {
-        const response = await axios.post('http://127.0.0.1:5000/completion', { id: id, status: status });
-        if (response.status === 200) {
-          this.status = 'TODOリストが更新されました！';
-          this.refreshTasks();
-        } else {
-          this.status = '処理に失敗しました';
-        }
-      } catch (error) {
-        console.error('完了処理エラー:', error);
-        this.status = '処理に失敗しました';
-      }
+      await axios.post('http://127.0.0.1:5000/completion', { id: id, status: status });
+      this.refreshTasks();
     },
 
     /**
@@ -218,12 +208,8 @@ export default {
      * @return {void}
      */
     async refreshTasks() {
-      try {
         const response = await axios.get('http://127.0.0.1:5000/get_list');
         this.todos = response.data;
-      } catch (error) {
-        console.error('タスクリスト取得エラー:', error);
-      }
     },
 
     /**
@@ -245,23 +231,33 @@ export default {
      * @return {void}
      */
     recieve_insert_success(value) {
-      this.message = value;
+      this.showMessage(value)
       this.list_get();
     },
     recieve_edit_success(value) {
-      this.message = value;
+      this.showMessage(value)
       this.list_get();
     },
     recieve_delete_success(value) {
-      this.message = value;
+      this.showMessage(value)
       this.list_get();
     },
     recieve_log_edit_success(value) {
-      this.message = value;
+      this.selectedLogEditTodo = null
+      this.showMessage(value)
       this.list_get();
-      setTimeout(function() {
-        window.location.reload();
-      }, 1000); // 1秒 
+    },
+    /**
+     * メッセージを表示するメソッド
+     * @param {String} msg 
+     * @return {void}
+     */
+    showMessage(msg) {
+      this.message = msg;
+      // 2秒後にメッセージを消す
+      setTimeout(() => {
+        this.message = '　';
+      }, 2000); // 2000ミリ秒 = 2秒
     }
   },
   mounted() {
@@ -272,11 +268,44 @@ export default {
 </script>
 
 <style>
+.todo-title {
+  font-family: 'Arial Black', sans-serif; /* 太字フォント */
+  font-size: 48px; /* フォントサイズを大きく */
+  color: #3498db; /* 明るい青色 */
+  text-align: center; /* 中央寄せ */
+  letter-spacing: 5px; /* 文字の間隔を広げる */
+  text-transform: uppercase; /* 全て大文字に */
+  background: linear-gradient(0deg, #12e0f3, #2c24ca); /* グラデーション背景 */
+  -webkit-background-clip: text; /* テキストのクリッピング */
+  -webkit-text-fill-color: transparent; /* テキストの色を透明にして背景のみ表示 */
+  margin-top: 20px; /* 上部の余白を追加 */
+  padding: 10px 0; /* 上下に余白 */
+  border-bottom: 2px solid #2980b9; /* 下線を追加 */
+}
+.todo-subtitle {
+  font-family: 'Arial Black', sans-serif; /* 太字フォント */
+  font-size: 24px; /* フォントサイズを大きく */
+  text-align: left; /* 中央寄せ */
+  letter-spacing: 5px; /* 文字の間隔を広げる */
+  background: linear-gradient(0deg, #12e0f3, #2c24ca); /* グラデーション背景 */
+  -webkit-background-clip: text; /* テキストのクリッピング */
+  -webkit-text-fill-color: transparent; /* テキストの色を透明にして背景のみ表示 */
+  padding: 10px 0; /* 上下に余白 */
+}
+.tost_msg{
+  font-size: 20px;
+  text-align: center;
+  font-weight: bold;
+  background: linear-gradient(0deg, #125df3, #2429ca); /* グラデーション背景 */
+  -webkit-background-clip: text; /* テキストのクリッピング */
+  -webkit-text-fill-color: transparent; /* テキストの色を透明にして背景のみ表示 */
+}
+
 /* 全体のレイアウト */
 body {
   font-family: 'Roboto', sans-serif;
-  margin: 20px;
-  padding: 90px;
+  margin: 30px;
+  padding: 30px;
   background-color: #ffffff; /* 背景色を白に */
   color: #000000; /* 文字色を黒に */
 }

@@ -33,17 +33,11 @@ export default {
         return; // 日付またはTODO内容が未入力の場合
       }
       this.message = null;// 通信成功メッセージをリセット
-      try{
-        const req = JSON.stringify({limit_date: this.limit_date, content: this.content,});
-        const response = await this.axios.post(`http://127.0.0.1:5000/insert`, req);
-        this.$emit('insert_success', response.data.message);
-        setTimeout(function() {
-          window.location.reload();
-        }, 1000); // 1秒 
-        this.$emit('close'); // 'close' イベントを発火
-      } catch (error) {
-        console.error('編集エラー:', error);
-      }
+      const req = JSON.stringify({limit_date: this.limit_date, content: this.content,});
+      const response = await this.axios.post(`http://127.0.0.1:5000/insert`, req);
+      await this.axios.get('http://127.0.0.1:5000/get_list');
+      this.$emit('insert_success', response.data.message);
+      this.$emit('close'); // 'close' イベントを発火
     }
   }
 };

@@ -64,7 +64,7 @@ def insert_data():
         conn.execute(insert_sql, (content, 0, limit_date))
         conn.commit()
 
-    return {"message": "TODOリストに追加しました。"}
+    return {"message": "～TODOリストに追加しました～"}
 
 
 # TODOを更新する
@@ -77,7 +77,7 @@ def todo_update():
         conn.execute(update_sql, (data["limit_date"], data["content"], data["id"]))
         conn.commit()
 
-    return {"message": "TODOリストを更新しました。"}
+    return {"message": "～TODOリストを更新しました～"}
 
 # TODOを削除する
 @app.route("/delete", methods=["POST"])
@@ -89,7 +89,7 @@ def todo_delete():
         conn.execute(delete_sql, (data["id"],))
         conn.commit()
 
-    return {"message": "TODOリストを削除しました。"}
+    return {"message": "～TODOリストを削除しました～"}
 
 # TODOを履歴として更新し、リストに追加する（ステータスを0にリセット）
 @app.route("/log_edit_add_list", methods=["POST"])
@@ -101,7 +101,7 @@ def todo_log_update():
         conn.execute(update_sql, (data["limit_date"], data["content"], data["id"]))
         conn.commit()
 
-    return {"message": "履歴からTODOを追加しました。"}
+    return {"message": "～履歴からTODOを追加しました～"}
 
 # 完了ステータスを切り替える
 @app.route("/completion", methods=["POST"])
@@ -114,7 +114,7 @@ def completion():
         conn.execute(update_sql, (status, data["id"]))
         conn.commit()
 
-    return {"message": "TODOリストを更新しました。"}
+    return {"message": "～TODOリストを更新しました～"}
 
 
 # インデックスページを表示する

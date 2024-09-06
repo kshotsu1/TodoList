@@ -134,7 +134,6 @@
   </div>
 </template>
 
-
 <script>
 import EditModal from './components/EditModal.vue'; 
 import LogEditModal from './components/LogEditModal.vue'; 

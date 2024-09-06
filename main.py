@@ -13,6 +13,12 @@ def base_dir():
 app = Flask(__name__, template_folder="dist", static_folder="dist/static")
 CORS(app)
 
+
+"""
+データベース接続を管理するコンテキストマネージャを作成する。
+Returns:
+    connection: sqlite3.Connection - データベース接続
+"""
 # データベース接続を管理するコンテキストマネージャ
 def get_db_connection():
     connection = sqlite3.connect("todo.db")
@@ -21,7 +27,11 @@ def get_db_connection():
 
 
 #==================GET==================
-
+"""
+GETメソッドでデータを取得するためのエンドポイントを作成する。
+Returns:
+    List[Dict]: todos - TODOリストのデータ
+"""
 # 全てのTODOを取得する
 @app.route("/get_list", methods=["GET"])
 def todos():
@@ -35,7 +45,14 @@ def todos():
 
 
 #==================POST==================
+"""
+POSTメソッドでデータを受け取るためのエンドポイントを作成する。
+リクエストボディにはJSON形式でデータを送信する。
+Returns:
+    Srting: message - 処理成功時のメッセージ
+"""
 
+# TODOを追加する
 @app.route("/insert", methods=["POST"])
 def insert_data():
     data = request.get_json(force=True)
@@ -84,7 +101,7 @@ def todo_log_update():
         conn.execute(update_sql, (data["limit_date"], data["content"], data["id"]))
         conn.commit()
 
-    return {"message": "TODOリストを更新しました。"}
+    return {"message": "履歴からTODOを追加しました。"}
 
 # 完了ステータスを切り替える
 @app.route("/completion", methods=["POST"])

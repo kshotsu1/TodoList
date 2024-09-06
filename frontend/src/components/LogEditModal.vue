@@ -9,7 +9,7 @@
       <h3>TODO内容</h3>
       <input id="content" type="text" v-model="content">
       <p>
-        <button @click="openLogRelodeModal(limit_date, content, id)">
+        <button @click="openLogRelodeModal(limit_date, content, id)" :disabled="!limit_date || !content">
           実行
         </button>
         <button @click="$emit('close');">
@@ -19,6 +19,7 @@
       <!-- selectedRelodeTodoが設定されたときにRelodeModalを表示 -->
       <RelodeModal   
         v-if="selectedRelodeTodo" 
+        v-on:log_edit_success="recieve_log_edit_success"
         :todo="selectedRelodeTodo"
         @close="selectedRelodeTodo = null"
       ></RelodeModal>
@@ -46,6 +47,7 @@ export default {
       id: this.todo.id, // 初期値として todo.content を設定
       content: this.todo.content, // 初期値として todo.content を設定
       limit_date: this.formatDate(this.todo.limit_date), // 日付の初期値として todo.limit を設定
+      message: null,
     };
   },
   methods: {
@@ -64,6 +66,11 @@ export default {
         id: id,  // IDを自動生成する関数などを使う
       };
       this.selectedRelodeTodo = todo; // クリックされたTODOを選択
+    },
+    async recieve_log_edit_success(value) {
+      const response = await this.$emit('log_edit_success', value);
+      this.$emit('log_edit_success', response.data.message);
+      this.$emit('close'); // 'close' イベントを発火
     }
   }
 };

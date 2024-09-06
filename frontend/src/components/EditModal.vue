@@ -9,7 +9,7 @@
       <h3>TODO内容</h3>
       <input id="content" type="text" v-model="content">
       <p>
-        <button @click="edit()">
+        <button @click="edit()" :disabled="!limit_date || !content">
           実行
         </button>
         <button @click="$emit('close')">
@@ -44,7 +44,9 @@ export default {
         const req =  JSON.stringify({ id: this.todo.id, limit_date: this.limit_date, content: this.content });
         const response = await this.axios.post(`http://127.0.0.1:5000/edit`, req);
         this.$emit('edit_success', response.data.message);
-        window.location.reload();
+        setTimeout(function() {
+          window.location.reload();
+        }, 2000); // 2秒 
         this.$emit('close'); // 'close' イベントを発火
       } catch (error) {
         console.error('編集エラー:', error);

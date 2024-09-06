@@ -12,7 +12,7 @@
           追加
         </button>
         <button @click="$emit('close');">
-          <img src="../assets/back.png" alt="戻る" style="width: 24px; height: 24px;">
+          戻る
         </button>
       </p>
     </div>
@@ -37,8 +37,10 @@ export default {
         const req = JSON.stringify({limit_date: this.limit_date, content: this.content,});
         const response = await this.axios.post(`http://127.0.0.1:5000/insert`, req);
         this.$emit('insert_success', response.data.message);
-        window.location.reload();
-        // this.$emit('close'); // 'close' イベントを発火
+        setTimeout(function() {
+          window.location.reload();
+        }, 1000); // 1秒 
+        this.$emit('close'); // 'close' イベントを発火
       } catch (error) {
         console.error('編集エラー:', error);
       }

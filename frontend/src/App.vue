@@ -1,5 +1,6 @@
 <template>
   <div>
+    <title>TODO</title>
     <div class="tost_msg">{{ message }}</div>
     <h1>TODO List</h1>
     <h2>Not Done</h2>
@@ -66,6 +67,7 @@
 
     <DeleteModal 
       v-if="selectedDelTodo" 
+      v-on:delete_success="recieve_delete_success" 
       :todo="selectedDelTodo" 
       @close="selectedDelTodo = null"
     ></DeleteModal>
@@ -123,8 +125,13 @@
         </tbody>
       </table>
     </div>
-    <LogEditModal v-if="selectedLogEditTodo" :todo="selectedLogEditTodo" @close="selectedLogEditTodo = null"></LogEditModal>
-    <DeleteModal v-if="selectedDelTodo" :todo="selectedDelTodo" @close="selectedDelTodo = null"></DeleteModal>
+    <LogEditModal 
+      v-if="selectedLogEditTodo" 
+      v-on:log_edit_success="recieve_log_edit_success"
+      :todo="selectedLogEditTodo" 
+      @close="selectedLogEditTodo = null"
+    ></LogEditModal>
+
   </div>
 </template>
 
@@ -173,7 +180,11 @@ export default {
     toggle() {this.isOpen = !this.isOpen; },
 
 
-    list_get(){ // リスト取得メソッド
+    /**
+     * リスト取得メソッド
+     * @return {void}
+     */
+    list_get(){ 
       axios.get('http://127.0.0.1:5000/get_list')
       .then(response  => {
         this.todos = response.data; // 取得したデータをtodosに設定
@@ -181,7 +192,13 @@ export default {
     },
 
 
-    async completeTask(id, status) { // タスク完了処理を行うメソッド
+    /**
+     * タスク完了処理を行うメソッド
+     * @param {Number} id 
+     * @param {Number} status 
+     * @return {void}
+     * */
+    async completeTask(id, status) { // 
       try {
         const response = await axios.post('http://127.0.0.1:5000/completion', { id: id, status: status });
         if (response.status === 200) {
@@ -195,7 +212,12 @@ export default {
         this.status = '処理に失敗しました';
       }
     },
-    async refreshTasks() { // タスクリストを取得するメソッド
+
+    /**
+     * タスクリストを取得するメソッド
+     * @return {void}
+     */
+    async refreshTasks() {
       try {
         const response = await axios.get('http://127.0.0.1:5000/get_list');
         this.todos = response.data;
@@ -204,15 +226,24 @@ export default {
       }
     },
 
-
-    isOverdue(limit_date) { // 期限が過ぎているかどうかを判定するメソッド
+    /**
+     * 期限が過ぎているかどうかを判定するメソッド
+     * @param {String} limit_date 
+     * @return {Boolean}
+     */
+    isOverdue(limit_date) { 
       const today = new Date();
       today.setHours(0, 0, 0, 0)
       const deadline = new Date(limit_date);
       deadline.setHours(0, 0, 0, 0);
       return deadline < today;
     },
-
+    
+    /**
+     * データの挿入成功時に呼び出されるメソッド
+     * @param {String} value 
+     * @return {void}
+     */
     recieve_insert_success(value) {
       this.message = value;
       this.list_get();
@@ -220,6 +251,17 @@ export default {
     recieve_edit_success(value) {
       this.message = value;
       this.list_get();
+    },
+    recieve_delete_success(value) {
+      this.message = value;
+      this.list_get();
+    },
+    recieve_log_edit_success(value) {
+      this.message = value;
+      this.list_get();
+      setTimeout(function() {
+        window.location.reload();
+      }, 1000); // 1秒 
     }
   },
   mounted() {
@@ -260,6 +302,8 @@ th {
 
 td {
   background-color: #ffffff; /* 背景色を白に */
+  font-weight: bold; /* ボールド */
+  font-size: 20px;
 }
 
 tr:nth-child(even) {
@@ -273,7 +317,7 @@ tr:hover {
 /* ボタンのスタイル */
 button {
   background-color: #36b8ff;
-  color: #ffffff; /* ボタンの文字色を白に */
+  color: #000000; /* ボタンの文字色を白に */
   border: none;
   border-radius: 6px;
   padding: 10px 20px;
@@ -408,6 +452,7 @@ th, td {
 
   font-size: 20px;
   text-align: center;
+  font-weight: bold;
 
 }
 </style>

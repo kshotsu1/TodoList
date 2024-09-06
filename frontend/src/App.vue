@@ -192,6 +192,7 @@ export default {
     },
 
 
+    
     /**
      * タスク完了処理を行うメソッド
      * @param {Number} id 

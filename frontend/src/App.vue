@@ -57,7 +57,6 @@
       <img src="./assets/add.png" alt="追加" style="width: 24px; height: 24px;">
     </button>
 
-    
     <EditModal 
       v-if="selectedEsitTodo" 
       v-on:edit_success="recieve_edit_success" 
@@ -134,6 +133,7 @@
 
   </div>
 </template>
+
 
 <script>
 import EditModal from './components/EditModal.vue'; 

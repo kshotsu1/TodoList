@@ -58,20 +58,30 @@ export default {
       const day = String(date.getDate()).padStart(2, '0');
       return `${year}-${month}-${day}`;
     },
+    /**
+     * LogRelodeModal(履歴の更新確認ダイアログ)を表示する
+     * @param limit_date 
+     * @param content 
+     * @param id 
+     */
     openLogRelodeModal(limit_date, content, id) {
-      // console.log("Logedit");
+      console.log("Logedit");
       const todo = {
         content: content,
         limit_date: limit_date,
-        id: id,  // IDを自動生成する関数などを使う
+        id: id, 
       };
       this.selectedRelodeTodo = todo; // クリックされたTODOを選択
     },
+
+    /**
+     * LogRelodeModalから受け取ったメッセージｗを親コンポーネントに渡す
+     * @param value 子コンポーネントから受け取ったメッセージ
+     */
     async recieve_log_edit_success(value) {
-      const response = await this.$emit('log_edit_success', value);
-      this.$emit('log_edit_success', response.data.message);
-      this.$emit('close'); // 'close' イベントを発火
-    }
+      this.$emit('log_edit_success', value);
+    },
+
   }
 };
 </script>

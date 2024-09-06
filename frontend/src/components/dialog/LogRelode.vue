@@ -43,28 +43,22 @@ export default {
     
     async log_edit_add_list(){
       //履歴の追加ボタンが押されたときの処理
-      try{
       const req = JSON.stringify({id: this.id, limit_date: this.limit_date, content: this.content});
       const response = await this.axios.post(`http://127.0.0.1:5000/log_edit_add_list`, req);
+      await this.axios.get('http://127.0.0.1:5000/get_list');
       this.$emit('log_edit_success', response.data.message);
       this.$emit('close'); // 'close' イベントを発火
-      } catch (error) {
-        console.error('編集エラー:', error);
-      }
     },
 
     async log_only_update(){
       // 履歴の更新ボタンが押されたときの処理
-      try{
       const req = JSON.stringify({id: this.id, limit_date: this.limit_date, content: this.content});
       const response = await this.axios.post(`http://127.0.0.1:5000/edit`, req);
+      await this.axios.get('http://127.0.0.1:5000/get_list');
       this.$emit('log_edit_success', response.data.message);
       this.$emit('close'); // 'close' イベントを発火
-      } catch (error) {
-        console.error('編集エラー:', error);
-      }
     }
-  },
+  }
 };
   
   // console.log(this.todo)

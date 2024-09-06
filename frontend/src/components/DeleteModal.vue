@@ -37,17 +37,12 @@ export default {
     },
     async del() {
       console.log("delete");
-      try {
-        const req = JSON.stringify({ id: this.todo.id });
-        const response = await this.axios.post('http://127.0.0.1:5000/delete', req);
-        this.$emit('delete_success', response.data.message);
-        setTimeout(function() {
-          window.location.reload();
-        }, 1000); // 1秒 
-        this.$emit('close'); // 'close' イベントを発火
-      } catch (error) {
-        console.error('削除エラー:', error);
-      }
+      const req = JSON.stringify({ id: this.todo.id });
+      const response = await this.axios.post('http://127.0.0.1:5000/delete', req);
+      await this.axios.get('http://127.0.0.1:5000/get_list');
+      this.$emit('delete_success', response.data.message);
+      this.$emit('close'); // 'close' イベントを発火
+      
     }
   }
 };

@@ -21,6 +21,7 @@
 </template>
   
 <script>
+import axios from 'axios';
 export default {
   data() {
     return {
@@ -40,17 +41,12 @@ export default {
     },
     async edit(){
       console.log("edit");
-      try {
-        const req =  JSON.stringify({ id: this.todo.id, limit_date: this.limit_date, content: this.content });
-        const response = await this.axios.post(`http://127.0.0.1:5000/edit`, req);
-        this.$emit('edit_success', response.data.message);
-        setTimeout(function() {
-          window.location.reload();
-        }, 2000); // 2秒 
-        this.$emit('close'); // 'close' イベントを発火
-      } catch (error) {
-        console.error('編集エラー:', error);
-      }
+      const req =  JSON.stringify({ id: this.todo.id, limit_date: this.limit_date, content: this.content });
+      const response = await this.axios.post(`http://127.0.0.1:5000/edit`, req);
+      await axios.get('http://127.0.0.1:5000/get_list');
+      this.$emit('edit_success', response.data.message);
+      this.$emit('close'); // 'close' イベントを発火
+      
     }
   },
   props: ['todo']
